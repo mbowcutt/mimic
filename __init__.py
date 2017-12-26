@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, flash, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 
@@ -41,20 +42,26 @@ def upload():
     </form>
     '''
 
+@app.route("/speak")
+def speak():
+    return model.make_sentence()
+
 def markovize(filename):
     with open(app.config['UPLOAD_FOLDER'] + "/" + filename) as f:
         text=f.read()
         return markovify.Text(text)
 
-@app.route("/speak")
-def speak():
-    return model.make_sentence()
+def setPersona(id, model):
+    return
 
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+def getPersona(id):
+    return model
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 
 if __name__ == "__main__":
     app.run()
