@@ -1,2 +1,8 @@
+# virtual environment directory
 /venv
+
+# npm
 /node_modules
+
+# python bytecode
+/__pycache__
