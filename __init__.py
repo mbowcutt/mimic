@@ -1,7 +1,9 @@
 import os
-import json
 from flask import Flask, flash, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
+
+import shelve
+db = shelve.open('personas.db')
 
 # Markov chain text generator
 import markovify
@@ -30,7 +32,7 @@ def upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             model = markovize(filename)
-            # return model.make_sentence()
+            
 
     return '''
     <!doctype html>
@@ -42,8 +44,9 @@ def upload():
     </form>
     '''
 
-@app.route("/speak")
-def speak():
+@app.route("/speak/{id}")
+def speak(id):
+    model = markovify.from_json(getPersona(id))
     return model.make_sentence()
 
 def markovize(filename):
@@ -52,16 +55,14 @@ def markovize(filename):
         return markovify.Text(text)
 
 def setPersona(id, model):
-    return
+    db[id] = model.to_json()
 
 def getPersona(id):
-    return model
+    return markovify.Text.from_json(db[id])
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
 
 if __name__ == "__main__":
     app.run()
