@@ -1,4 +1,4 @@
-# Mimic Me
+# Mimic
 
 Text Imitation Engine
 
@@ -6,14 +6,43 @@ Text Imitation Engine
 
 Mimic is an identity imitation engine. Select a profile and utter phrases. Upload a collection of text and give it a name to create a profile. Pending frontend development, it will soon be served on [jekyll island](https://jekyll.is/land).
 
-## Installation
+## Developer Installation
 
-Mimic is under active development, so there's no installer. It will soon be deployed to the WWW, but until then you can install it via `pip`. To get started, clone the repository and init the repository.
+Mimic is under active development, so there's no user installer. It will soon be deployed to the WWW, but until then you can build the source via `pip`. To get started, clone the repository.
 
 ```shell
-git clone https://github.com/mbowcutt/mimmic.git mimic
+git clone https://github.com/mbowcutt/mimic.git mimic
 cd mimic
-python __init__.py
+```
+
+It is recommended to develop under a virtual environment. Make sure you have `virtualenv` installed and enter it.
+
+```shell
+pip install virtualenv
+virtualenv venv
+source venv/bin/activate
+```
+
+To exit the virtual environment, issue the `deactivate` command. TO re-enter, issue `source venv/bin/activate`
+
+Now install the dependencies.
+
+```shell
+pip install flask markovify
+```
+
+To run, type
+
+```shell
+export FLASK_APP=__init__.py
+export FLASK_DEBUG=true
+flask run
+```
+
+Alternatively, you can use
+
+```shell
+python __init__.pyo
 ```
 
 Then head over to http://127.0.0.1:5000
@@ -31,18 +60,6 @@ There's many things Mimic needs at the moment, the biggest of which is a stable 
 - Implement ReactXP
 - Implement IPFS
 - Implement HTTPS
-
-## Development
-
-To get started developing, set the following variables and start the app:
-
-```shell
-export FLASK_APP=__init__.py
-export FLASK_DEBUG=true
-flask run
-```
-
-Navigate over to http://127.0.0.1:5000. Flask will compile the changes in realtime, just `f5` a browser refresh!
 
 ## Contact
 
