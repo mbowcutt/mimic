@@ -1,8 +1,8 @@
 import os
-from flask import Flask, flash, request, redirect, url_for, send_from_directory
+import shelve
+from flask import Flask, flash, request, redirect, url_for, send_from_directory, render_template
 from werkzeug.utils import secure_filename
 
-import shelve
 db = shelve.open('personas.db')
 
 # Markov chain text generator
@@ -34,18 +34,10 @@ def upload():
             model = markovize(filename)
             
 
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
+    return 
 
-@app.route("/speak/{id}")
-def speak(id):
+@app.route("/utterance/{id}")
+def utter(id):
     model = markovify.from_json(getPersona(id))
     return model.make_sentence()
 
