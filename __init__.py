@@ -34,7 +34,7 @@ def upload():
             model = markovize(filename)
             
 
-    return 
+    return render_template('index.html')
 
 @app.route("/utterance/{id}")
 def utter(id):
