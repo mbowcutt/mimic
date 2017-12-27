@@ -42,7 +42,7 @@ flask run
 Alternatively, you can use
 
 ```shell
-python __init__.pyo
+python __init__.py
 ```
 
 Then head over to http://127.0.0.1:5000
