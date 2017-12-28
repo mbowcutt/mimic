@@ -1,12 +1,8 @@
 import os
 import shelve
-from flask import Flask, flash, request, redirect, url_for, send_from_directory, render_template
-from werkzeug.utils import secure_filename
-
-db = shelve.open('personas.db')
-
-# Markov chain text generator
 import markovify
+from flask import Flask, flash, jsonify, request, redirect, url_for, send_from_directory, render_template
+from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER='/tmp'
 ALLOWED_EXTENSIONS = set(['txt'])
@@ -15,42 +11,68 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH']=16*1024*1024 # 16 Mb upload limit
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/personas")
+def personas():
+    db = shelve.open('personas.db')
+    names = list(db.keys())
+    db.close()
+    return jsonify(names)
+
+@app.route("/markovify", methods=['POST'])
 def upload():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            model = markovize(filename)
-            
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    if 'name' not in request.form:
+        flash('No name part')
+        return redirect(request.url)
 
-    return render_template('index.html')
+    file = request.files['file']
+    name = request.form['name']
 
-@app.route("/utterance/{id}")
-def utter(id):
-    model = markovify.from_json(getPersona(id))
-    return model.make_sentence()
+    # if user does not select file, browser also
+    # submit a empty part without filename
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if name == '':
+        flash('No given name')
+        return redirect(request.url)
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        model = markovize(filename)
+        setPersona(name, model)
+
+@app.route("/utterance/<name>")
+def utter(name):
+    utterance = getPersona(name).make_sentence()
+    return jsonify(utterance=utterance)
 
 def markovize(filename):
     with open(app.config['UPLOAD_FOLDER'] + "/" + filename) as f:
         text=f.read()
         return markovify.Text(text)
 
-def setPersona(id, model):
-    db[id] = model.to_json()
+def setPersona(name, model):
+    db = shelve.open('personas.db')
+    if (name in db):
+        db[name] = markovify.combine([getPersona(name), model]).to_json()
+    else:
+        db[name] = model.to_json()
+    db.close()
 
-def getPersona(id):
-    return markovify.Text.from_json(db[id])
+def getPersona(name):
+    db = shelve.open('personas.db')
+    model = markovify.Text.from_json(db[name])
+    db.close()
+    return model
 
 def allowed_file(filename):
     return '.' in filename and \
