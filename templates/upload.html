@@ -1,15 +1,21 @@
-<!doctype html>
-<html>
-    <head>
-        <title>Mimic</title>
-    </head>
-    <body>
-        <h1>Mimic</h1>
-        <form method=post enctype=multipart/form-data>
-                <input type=text name=name></br>
-                <input type=file name=file></br>
+{% extends "layout.html" %}
+{% block body %}
+    <div id="persona_enrollment_form">
+        <form method=post enctype=multipart/form-data action="/upload">
+            <div>
+                <input type=text name=name>
+            </div></br>
+            <div>
+                <input type=file name=file>
+            </div></br>
+            <div>
+                <select name=func>
+                    <option selected=true value="markovify">markovify</option>
+                </select>
+            </div></br>
+            <div>
                 <input type=submit value=Upload>
+            </div>
         </form>
-    </body>    
-</html>
-
+    </div>
+{% endblock %}
