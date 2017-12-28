@@ -1,6 +1,6 @@
 import os
 import shelve
-from flask import Flask, flash, jsonify, request, redirect, url_for, send_from_directory, render_template
+from flask import Flask, flash, jsonify, request, redirect, url_for, send_from_directory, render_template, Blueprint
 from werkzeug.utils import secure_filename
 
 import markovify
@@ -15,11 +15,16 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH']=16*1024*1024 # 16 Mb upload limit
 
+mimic = Blueprint('mimic', __name__,
+                    template_folder="templates", static_folder="static")
+
 @app.route("/")
+@mimic.route("/")
 def index():
     return render_template("layout.html")
 
 @app.route("/personas")
+@mimic.route("/personas")
 def personas():
     db = shelve.open('personas.db')
     names = list(db.keys())
@@ -27,6 +32,7 @@ def personas():
     return render_template("personas.html", names=names)
 
 @app.route("/upload", methods=['GET', 'POST'])
+@mimic.route("/upload", methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
         # check if the post request has the file part
@@ -59,6 +65,7 @@ def upload():
     return render_template("upload.html")
 
 @app.route("/utterance", methods=['GET','POST'])
+@mimic.route("/utterance", methods=['GET', 'POST'])
 def utterance():
     if request.method=='POST':
         if 'name' not in request.form:
