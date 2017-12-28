@@ -6,3 +6,6 @@
 
 # python bytecode
 /__pycache__
+
+# logfile
+app.log
