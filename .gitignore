@@ -9,3 +9,6 @@
 
 # logfile
 app.log
+
+# persona db
+personas.db
