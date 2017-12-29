@@ -2,9 +2,31 @@
 <html>
     <head>
         <title>Mimic</title>
+
     </head>
     <body>
-        <h1>Mimic</h1>
+        <h1>Mimic</h1> 
+        <div id="persona_search_form">
+            <form method=get action=/
+        </div>
+        
         {% block body %}{% endblock %}
+
+        {% block content %}{% endblock %}
+
+        <div id="persona_enrollment_form">
+            <form method=post enctype=multipart/form-data action="/persona">
+                <div>
+                    <input type=text name=name>
+                </div></br>
+                <div>
+                    <input type=file name=file>
+                </div></br>
+                <div>
+                    <input type=submit value=Upload>
+                </div>
+            </form>
+        </div>
+
     </body>
 </html>

@@ -1,6 +1,7 @@
 import os
 from flask import Flask, flash, jsonify, request, redirect, url_for, send_from_directory, render_template, Blueprint
 from flask_sqlalchemy import SQLAlchemy
+from forms import PersonaSearchForm
 from werkzeug.utils import secure_filename
 import markovify
 import logging
@@ -20,7 +21,6 @@ db = SQLAlchemy(app)
 # Persona class
 class Persona(db.Model):
     name = db.Column(db.String(80), primary_key=True)
-    source = db.Column(db.Text, nullable=False)
     model = db.Column(db.Text, nullable=False)
 
 db.create_all()
@@ -33,17 +33,9 @@ mimic = Blueprint('mimic', __name__,
 def index():
     return render_template("layout.html")
 
-@app.route("/personas/<name>")
-@mimic.route("/personas/<name>")
-def personas(name):
-    if not name:
-        names=Persona.query.all()
-    names = Persona.query.filter_by(name=name).all()
-    return names[0].name
-
-@app.route("/upload", methods=['GET', 'POST'])
-@mimic.route("/upload", methods=['GET', 'POST'])
-def upload():
+@app.route("/<name>", methods=['GET', 'POST'])
+@mimic.route("/<name>", methods=['GET', 'POST'])
+def persona(name):
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -52,8 +44,6 @@ def upload():
         if 'name' not in request.form:
             flash("No name field in form")
             return redirect(request.url)
-        if 'func' not in request.form:
-            flash("No func field in form")
 
         file = request.files['file']
         name = request.form['name']
@@ -71,44 +61,45 @@ def upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             model = markovize(filename)
-            createPersona(name, 'upload', model)
+            createOrUpdatePersona(name, model)
+        return url_for(request.url)
 
-    return render_template("upload.html")
+    persona = Persona.query.filter_by(name=name).first()
+    sentence = readPersona(name).make_sentence()
+    return render_template("persona.html", persona=persona, sentence=sentence)
 
-@app.route("/utterance/<name>", methods=['GET','POST'])
-@mimic.route("/utterance/<name>", methods=['GET', 'POST'])
-def utterance(name):
-    if request.method=='POST':
-        if 'name' not in request.form:
-            flash("No name field in form")
-            return redirect("/personas")
-        name = request.form['name']
-
-        if name == '':
-            flash('No persona selected')
-            return redirect("/personas")
-        sentence = readPersona(name).make_sentence()
-    else:
-        sentence = readPersona(name).make_sentence()
-    return sentence
+@app.route("/explore", methods=['GET', 'POST'])
+@mimic.route("/explore", methods=['GET', 'POST'])
+def explore():
+    search = PersonaSearchForm(request.form)
+    if request.method == 'POST':
+        return url_for("/persona" + search.data['name'])
+    return render_template("explore.html", form=search, personas=db.session.query(Persona.name).all())
 
 def markovize(filename):
     with open(app.config['UPLOAD_FOLDER'] + "/" + filename) as f:
         text=f.read()
         return markovify.Text(text)
 
-def createPersona(name, source, model):
-        # = markovify.combine([getPersona(name), model]).to_json()
-    model_json = model.to_json()
-    person = Persona(name=name, source=source, model=model_json)
-    db.session.add(person)
-    db.session.commit()
+def createOrUpdatePersona(name, model):
+    if not Persona.query.filter_by(name=name).first():
+        person = Persona(name=name, model=model.to_json())
+        db.session.add(person)
+        db.session.commit()
+        return
+    else:
+        person = Persona.query.filter_by(name=name).first()
+        model_old = person.model
+        model_new = markovify.combine(model_old, model)
+        person.model = model_new.to_json()
+        db.session.commit()
     return
 
 def readPersona(name):
     person = Persona.query.filter_by(name=name).first()
     model = markovify.Text.from_json(person.model)
     return model
+
 
 def allowed_file(filename):
     return '.' in filename and \
