@@ -10,5 +10,5 @@
 # logfile
 app.log
 
-# persona db
-personas.db
+# mimic.db
+mimic.db

@@ -1,19 +1,29 @@
 import os
-import shelve
 from flask import Flask, flash, jsonify, request, redirect, url_for, send_from_directory, render_template, Blueprint
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
-
 import markovify
-
 import logging
-logging.basicConfig(filename='app.log',level=logging.INFO)
 
+## Upload restrictions
 UPLOAD_FOLDER='/tmp'
 ALLOWED_EXTENSIONS = set(['txt'])
 
+# Initialize app
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mimic.db'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH']=16*1024*1024 # 16 Mb upload limit
+logging.basicConfig(filename='app.log',level=logging.INFO)
+db = SQLAlchemy(app)
+
+# Persona class
+class Persona(db.Model):
+    name = db.Column(db.String(80), primary_key=True)
+    source = db.Column(db.Text, nullable=False)
+    model = db.Column(db.Text, nullable=False)
+
+db.create_all()
 
 mimic = Blueprint('mimic', __name__,
                     template_folder="templates", static_folder="static")
@@ -23,13 +33,13 @@ mimic = Blueprint('mimic', __name__,
 def index():
     return render_template("layout.html")
 
-@app.route("/personas")
-@mimic.route("/personas")
-def personas():
-    db = shelve.open('personas.db')
-    names = list(db.keys())
-    db.close()
-    return render_template("personas.html", names=names)
+@app.route("/personas/<name>")
+@mimic.route("/personas/<name>")
+def personas(name):
+    if not name:
+        names=Persona.query.all()
+    names = Persona.query.filter_by(name=name).all()
+    return names[0].name
 
 @app.route("/upload", methods=['GET', 'POST'])
 @mimic.route("/upload", methods=['GET', 'POST'])
@@ -61,12 +71,13 @@ def upload():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             model = markovize(filename)
-            setPersona(name, model)
+            createPersona(name, 'upload', model)
+
     return render_template("upload.html")
 
-@app.route("/utterance", methods=['GET','POST'])
-@mimic.route("/utterance", methods=['GET', 'POST'])
-def utterance():
+@app.route("/utterance/<name>", methods=['GET','POST'])
+@mimic.route("/utterance/<name>", methods=['GET', 'POST'])
+def utterance(name):
     if request.method=='POST':
         if 'name' not in request.form:
             flash("No name field in form")
@@ -76,9 +87,9 @@ def utterance():
         if name == '':
             flash('No persona selected')
             return redirect("/personas")
-        sentence = getPersona(name).make_sentence()
+        sentence = readPersona(name).make_sentence()
     else:
-        sentence = "/GET"
+        sentence = readPersona(name).make_sentence()
     return sentence
 
 def markovize(filename):
@@ -86,18 +97,17 @@ def markovize(filename):
         text=f.read()
         return markovify.Text(text)
 
-def setPersona(name, model):
-    db = shelve.open('personas.db')
-    if (name in db):
-        db[name] = markovify.combine([getPersona(name), model]).to_json()
-    else:
-        db[name] = model.to_json()
-    db.close()
+def createPersona(name, source, model):
+        # = markovify.combine([getPersona(name), model]).to_json()
+    model_json = model.to_json()
+    person = Persona(name=name, source=source, model=model_json)
+    db.session.add(person)
+    db.session.commit()
+    return
 
-def getPersona(name):
-    db = shelve.open('personas.db')
-    model = markovify.Text.from_json(db[name])
-    db.close()
+def readPersona(name):
+    person = Persona.query.filter_by(name=name).first()
+    model = markovify.Text.from_json(person.model)
     return model
 
 def allowed_file(filename):
@@ -107,6 +117,7 @@ def allowed_file(filename):
 
 def create_app():
     app = Flask(__name__)
+    db.init_app(app)
     return app
 
 if __name__ == "__main__":
