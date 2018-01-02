@@ -8,6 +8,9 @@ from flask_uploads import UploadSet, TEXT
 class PersonaSearchForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
 
+class PersonaAliasForm(FlaskForm):
+    alias = StringField('Alias', validators=[DataRequired()])
+
 class PersonaEnrollmentForm(FlaskForm):
     file = FileField("Source Document", validators=[FileRequired()])
 

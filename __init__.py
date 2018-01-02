@@ -42,11 +42,25 @@ def persona(name, action):
 
         return redirect(url_for("persona", name=name, action="manage"))
 
+    elif action=="alias":
+        if request.method=="POST":
+            alias=request.form['alias']
+            if alias=="":
+                flash("No given alias")
+                return redirect(url_for("persona", name=name, action="manage"))
+            if not person:
+                flash("Persona does not exist")
+                return redirect(url_for("persona", name=name, action="manage"))
+            else:
+                registerAlias(person, alias)
+                return redirect(url_for("persona", name=name, action="manage"))
+
     elif action=="manage":
         if not person:
             return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=False)
         else:
-            return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=True)
+            aliases=person.aliases
+            return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=True, aliases=aliases, aliasform=PersonaAliasForm())
     
     else:
         if not person:
@@ -62,7 +76,11 @@ def explore():
         if not name:
             return redirect("/explore")
         else:
-            return redirect(url_for("persona", name=name, action="utter"))
+            alias = Alias.query.filter_by(name=name.lower()).first()
+            if not alias:
+                return redirect(url_for("persona", name=name, action="utter"))
+            else:
+                return redirect(url_for("persona", name=alias.persona.name, action="utter"))
     return render_template("explore.html", search=PersonaSearchForm(),
                             personas=db.session.query(Persona.name).all())
 

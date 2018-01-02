@@ -2,19 +2,48 @@
 
 {% block content %}
 <div class="w3-display-middle">
+
     <h1 class="w3-jumbo w3-animate-opacity w3-center">
         {{name}}
     </h1>
+
     {% if exist %}
-    <p class="w3-large w3-center">management dashboard.</p>
+        <p class="w3-large w3-center">management dashboard.</p>
+
+        <form class="w3-card w3-ul w3-sand" 
+            method="POST" 
+            action="{{url_for('persona', name=name, action='alias')}}">
+
+            <li class="w3-xlarge">Alias List
+                <i class="material-icons w3-right w3-button" onclick="w3.show('#alias_list')">library_add</i>
+            </li>
+
+            {% for alias in aliases %}
+            <li class="w3-large">{{alias.name}}</li>
+            {% endfor %}
+
+            {{aliasform.alias(class_="w3-input w3-sand w3-padding w3-large", style="display:none;", id="alias_list", placeholder="New Alias")}}
+        </form>
+
     {% else %}
-    <p class="w3-large w3-center">...doesn't exist yet. If you've got the goods, though, you can create {{name}}</p>
+        <p class="w3-large w3-center">
+            ...doesn't exist yet. If you've got the goods, though, you can create {{name}}
+        </p>
     {% endif %}
 
-    <form class="w3-card w3-animate-opacity w3-sand" method="POST" enctype="multipart/form-data" action="{{url_for('persona', name=name, action='upload')}}">
-        <label class="w3-margin w3-middle"></label>
-        {{ upload.file(class_="w3-bar-item w3-button") }}
-        <button class="w3-bar-item w3-button" type=submit>Upload</button>
+    </br>
+
+    <form 
+        class="w3-card w3-ul w3-sand" 
+        method="POST" enctype="multipart/form-data" 
+        action="{{url_for('persona', name=name, action='upload')}}">
+
+        <li class="w3-xlarge">Upload Documents</li>
+        <li class="w3-container">
+            {{ upload.file(class_="w3-bar-item w3-button") }}
+            <button class="w3-bar-item w3-button" type=submit>Upload</button>  
+        </li>
     </form> 
+
 </div>
 {% endblock %}

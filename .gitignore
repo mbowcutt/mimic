@@ -12,3 +12,7 @@ app.log
 
 # mimic.db
 mimic.db
+mimic_backup.db
+
+# flask-migrate
+migrations/
