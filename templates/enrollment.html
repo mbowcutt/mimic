@@ -1,26 +1,20 @@
-{% extends "layout.html" %}
+{% extends "persona.html" %}
 
-{% block body %}
+{% block content %}
+<div class="w3-display-middle">
+    <h1 class="w3-jumbo w3-animate-opacity w3-center">
+        {{name}}
+    </h1>
+    {% if exist %}
+    <p class="w3-large w3-center">management dashboard.</p>
+    {% else %}
+    <p class="w3-large w3-center">...doesn't exist yet. If you've got the goods, though, you can create {{name}}</p>
+    {% endif %}
 
-    <div class="bgimg w3-display-container">
-        <div class="w3-display-middle">
-            <h1 class="w3-jumbo w3-animate-opacity w3-center">
-                {{name}}
-            </h1>
-            <p class="w3-large w3-center">doesn't exist yet. If you've got the goods, though, you can create {{name}}</p>
-            <form class="w3-card w3-animate-opacity w3-sand" id="persona_upload" method="POST" enctype="multipart/form-data">
-                <label class="w3-margin w3-middle"></label>
-                {{ upload.file(class_="w3-bar-item w3-button") }}
-                <button class="w3-bar-item w3-button" type=submit>Upload</button>
-            </form> 
-        </div>
-    </div>
-
-{% endblock %}
-
-{% block footer %}
-<div class="w3-container w3-black w3-bottom">
-    <label class="w3-jumbo w3-left-align w3-padding">{{name}}</label>
-    <i class="material-icons w3-xxlarge w3-button w3-sand w3-round-xlarge w3-right w3-margin" href="{{url_for('persona', name=name)}}">account_circle</i>
-</div> 
+    <form class="w3-card w3-animate-opacity w3-sand" method="POST" enctype="multipart/form-data" action="{{url_for('persona', name=name, action='upload')}}">
+        <label class="w3-margin w3-middle"></label>
+        {{ upload.file(class_="w3-bar-item w3-button") }}
+        <button class="w3-bar-item w3-button" type=submit>Upload</button>
+    </form> 
+</div>
 {% endblock %}

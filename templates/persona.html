@@ -3,34 +3,19 @@
 {% block body %}
 
     <div class="bgimg w3-display-container">
-        <blockquote class="w3-container w3-display-middle w3-rightbar w3-xxlarge w3-sand w3-round-xxlarge w3-serif" >
-            <p>{{ engine.make_sentence() }}</p>
-        </blockquote>
+        {% block content %}{% endblock %}
     </div>
 
-    <div class="w3-modal w3-display-middle" id="persona_upload">
-        <div class="w3-modal-content">
-
-            <header class="w3-container">
-                <span onclick="w3.hide('#persona_upload')"
-                class="w3-button w3-display-topright">&times;</span>
-                <h2>Upload documents for {{person.name}}</h2>
-            </header>
-
-            <div class="w3-container">
-                <form method="POST" enctype="multipart/form-data">
-                    {{ upload.file(class_="w3-bar-item w3-button") }}
-                    <button class="w3-bar-item w3-button" type=submit>Upload</button>
-                </form>
-            </div>
-
-        </div> 
-    </div>
 {% endblock %}
 
 {% block footer %}
-<div class="w3-container w3-black w3-bottom">
-    <label class="w3-jumbo w3-left-align w3-padding">{{person.name}}</label>
-    <i class="material-icons w3-xxlarge w3-button w3-sand w3-round-xlarge w3-right w3-margin" onclick="w3.show('#persona_upload')">cloud_upload</i>
+<div class="w3-bar w3-black w3-bottom">
+    <label class="w3-jumbo w3-bar-item w3-left-align">{{name}}</label>
+    <a href="{{url_for('persona', name=name, action='utter')}}" class="w3-bar-item w3-button w3-sand w3-round-xlarge w3-margin">
+        <i class="material-icons w3-jumbo" >textsms</i>
+    </a>
+    <a href="{{url_for('persona', name=name, action='manage')}}" class="w3-bar-item w3-button w3-sand w3-round-xlarge w3-margin">
+        <i class="material-icons w3-jumbo" >settings</i>
+    </a>
 </div> 
 {% endblock %}
