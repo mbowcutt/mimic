@@ -42,6 +42,8 @@ def persona(name):
         createOrUpdatePersona(name, model.to_json(), 'manual upload')
 
     person = readPersona(name)
+    if not person:
+        return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name)
     return render_template("persona.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(),
                              person=person, engine = markovify.Text.from_json(person.model))
 
