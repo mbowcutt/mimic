@@ -12,40 +12,47 @@ logging.basicConfig(filename='app.log',level=logging.INFO)
 from mimic.mimic_db import *
 from mimic.forms import *
 
-mimic = Blueprint('mimic', __name__,
-                    template_folder="templates", static_folder="static")
+mimic = Blueprint('mimic', __name__, template_folder="templates", static_folder="static")
 
 @app.route("/")
 @mimic.route("/")
 def index():
     return render_template("index.html", search=PersonaSearchForm())
 
-@app.route("/<name>", methods=['GET', 'POST'])
-@mimic.route("/<name>", methods=['GET', 'POST'])
-def persona(name):
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash("No 'file' file in form")
-            return redirect(request.url)
-
-        file = request.files['file']
-
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(url_for("persona", name=name))
-
-        #saveDocument(file)
-        model = markovize(file)
-        createOrUpdatePersona(name, model.to_json(), 'manual upload')
-
+@app.route("/<name>/<action>", methods=['GET', 'POST'])
+@mimic.route("/<name>/<action>", methods=['GET', 'POST'])
+def persona(name, action):
     person = readPersona(name)
-    if not person:
-        return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name)
-    return render_template("persona.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(),
-                             person=person, engine = markovify.Text.from_json(person.model))
+    if action=="upload":
+        if request.method == 'POST':
+            if 'file' not in request.files:
+                flash("No 'file' file in form")
+                return redirect(url_for("persona", name=name, action="manage"))
+
+            file = request.files['file']
+
+            # if user does not select file, browser also
+            # submit a empty part without filename
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(url_for("persona", name=name, action="manage"))
+
+            model = markovize(file)
+            createOrUpdatePersona(person, name, model, 'manual upload')
+
+        return redirect(url_for("persona", name=name, action="manage"))
+
+    elif action=="manage":
+        if not person:
+            return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=False)
+        else:
+            return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=True)
+    
+    else:
+        if not person:
+            return redirect(url_for("persona", name=name, action="manage"))
+        return render_template("utter.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(),
+                                name=name, engine = markovify.Text.from_json(person.model))
 
 @app.route("/explore", methods=['GET', 'POST'])
 @mimic.route("/explore", methods=['GET', 'POST'])
@@ -55,7 +62,7 @@ def explore():
         if not name:
             return redirect("/explore")
         else:
-            return redirect(url_for("persona", name=name))
+            return redirect(url_for("persona", name=name, action="utter"))
     return render_template("explore.html", search=PersonaSearchForm(),
                             personas=db.session.query(Persona.name).all())
 
