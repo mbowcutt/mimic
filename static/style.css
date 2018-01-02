@@ -1,0 +1,14 @@
+body, h1 {font-family: 'Abel', sans-serif}
+body, html {height: 100%;}
+.bgimg {
+    min-height: 100%;
+    background-position: center;
+    background-size: cover;
+}
+
+body {
+    background-image: url('/static/home.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}

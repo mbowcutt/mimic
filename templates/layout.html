@@ -2,31 +2,60 @@
 <html>
     <head>
         <title>Mimic</title>
-
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
+        <script src="https://www.w3schools.com/lib/w3.js"></script> 
+        <link rel="stylesheet" href="/static/style.css">
     </head>
-    <body>
-        <h1>Mimic</h1> 
-        <div id="persona_search_form">
-            <form method=get action=/
-        </div>
-        
-        {% block body %}{% endblock %}
 
-        {% block content %}{% endblock %}
+    <header>
+        <div class="w3-top">
+            <form class="w3-bar w3-black" method=post action="/explore">
 
-        <div id="persona_enrollment_form">
-            <form method=post enctype=multipart/form-data action="/persona">
-                <div>
-                    <input type=text name=name>
-                </div></br>
-                <div>
-                    <input type=file name=file>
-                </div></br>
-                <div>
-                    <input type=submit value=Upload>
+                <label class="w3-bar-item w3-xlarge w3-wide">mimic</label>
+                {{ search.name(class_="w3-input w3-bar-item w3-mobile w3-xlarge w3-sand") }}
+                <button type="submit" class="w3-button w3-bar-item w3-mobile w3-xlarge w3-sand"><i class="material-icons">search</i></button>
+
+                <a href="/" class="w3-bar-item w3-button w3-mobile w3-xlarge"><i class="material-icons">home</i></a>
+                <a href="/explore" class="w3-bar-item w3-button w3-mobile w3-xlarge"><i class="material-icons">cloud</i></a>
+                <a href="/develop" class="w3-bar-item w3-button w3-mobile w3-xlarge"><i class="material-icons">code</i></a>
+                
+                <div class="w3-dropdown-hover">
+                    <button class="w3-button w3-mobile w3-xlarge">
+                        <i class="material-icons">mail</i>
+                    </button>
+                    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                        <h4 class="w3-bar-item">Questions? Ideas?</h4>
+                        <a href="https://github.com/mbowcutt/mimic/issues" class="w3-bar-item w3-button">Submit an issue</a>
+                        <a href="https://github.com/mbowcutt/mimic/pulls" class="w3-bar-item w3-button">Create a pull request</a>
+                        <a href="mailto:mbowcutt@case.edu" class="w3-bar-item w3-button">Send an email</a>
+                    </div>
                 </div>
+
+                <div class="w3-dropdown-hover">
+                    <button class="w3-button w3-mobile w3-xlarge">
+                        <i class="material-icons">link</i>
+                    </button>
+                    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                        <h4 class="w3-bar-item">Links</h4>
+                        <a href="https://github.com/mbowcutt/mimic" class="w3-bar-item w3-button">Github</a>
+                    </div>
+                </div>
+            
             </form>
         </div>
 
+        {% block header %}{% endblock %}
+    </header>
+
+    <body class="w3-khaki">
+    {% block body %}{% endblock %}
     </body>
+
+    <footer>
+        {% block footer %}{% endblock %}
+    </footer>
+
 </html>

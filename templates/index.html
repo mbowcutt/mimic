@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="bgimg w3-display-container w3-animate-opacity">
+    <div class="w3-display-middle">
+        <h1 class="w3-jumbo w3-animate-fading w3-center">
+            <a href="/explore">mimic</a>
+        </h1>
+        <form method="POST" action="/explore" class="w3-animate-bottom">
+            {{search.name(class_="w3-input w3-animate-input w3-mobile w3-sand")}}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

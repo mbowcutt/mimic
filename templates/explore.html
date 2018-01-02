@@ -1,18 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
 
-    <div id="persona_list">
+    <div class="w3-container w3-display-middle w3-center">
         {%  for persona in personas %}
-        <div id=persona_container_lite>
-            {{persona.name}}
-        </div>
+            <button class="w3-card w3-btn w3-margin w3-white w3-animate-zoom" onclick=window.location="{{url_for('persona', name=persona.name)}}">
+                <label class="w3-jumbo">{{persona.name}}</label>
+            </button>
         {% endfor %}
     </div>
-    <form method=post>
-        <dl>
-            {{ render_field(form.search)}}
-        </dl>
-        <input type=submit value=Search>
-    </form>
 
 {% endblock %}
