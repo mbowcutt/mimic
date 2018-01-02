@@ -28,7 +28,7 @@ To exit the virtual environment, issue the `deactivate` command. TO re-enter, is
 Now install the dependencies.
 
 ```shell
-pip install flask markovify
+pip install flask flask-wtf flask-uploads flask-sqlalchemy markovify
 ```
 
 To run, type
