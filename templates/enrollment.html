@@ -10,21 +10,32 @@
     {% if exist %}
         <p class="w3-large w3-center">management dashboard.</p>
 
-        <form class="w3-card w3-ul w3-sand" 
-            method="POST" 
-            action="{{url_for('persona', name=name, action='alias')}}">
-
-            <li class="w3-xlarge">Alias List
-                <i class="material-icons w3-right w3-button" onclick="w3.show('#alias_list')">library_add</i>
+        <div class="w3-card w3-ul w3-sand">
+            <li class="w3-container">
+                <label class="w3-xlarge w3-padding">Alias Management</label>
+                <i class="material-icons w3-button w3-xlarge w3-right" 
+                    onclick="w3.toggleShow('#alias_list')">keyboard_arrow_down</i>
             </li>
 
+            <li class="w3-large w3-bar" id="alias_list" style="display:none;">
+                <div class="w3-bar-item">{{name}} (default)</div>
+                <span class="material-icons w3-bar-item w3-btn w3-right" 
+                    onclick="w3.toggleShow('#alias_name')">control_point</span>
+            </li>
             {% for alias in aliases %}
-            <li class="w3-large">{{alias.name}}</li>
+                <li class="w3-large w3-bar" id="alias_list" style="display:none;">
+                    <div class="w3-bar-item">{{alias.name}}</div>
+                    <button type="submit" formmethod="DELETE"
+                        class="material-icons w3-bar-item w3-btn w3-right">delete</button>
+                </li>
             {% endfor %}
 
-            {{aliasform.alias(class_="w3-input w3-sand w3-padding w3-large", style="display:none;", id="alias_list", placeholder="New Alias")}}
-        </form>
-
+            <form id="alias_name" style="display:none;" method="POST" 
+                action="{{url_for('persona', name=name, action='alias')}}">
+                {{aliasform.alias(class_="w3-input w3-border-top w3-sand w3-padding w3-large",
+                            placeholder="New Alias")}}
+            </form>
+        </div>
     {% else %}
         <p class="w3-large w3-center">
             ...doesn't exist yet. If you've got the goods, though, you can create {{name}}
