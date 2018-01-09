@@ -11,6 +11,7 @@ app.config['UPLOAD_FOLDER'] = '/tmp'
 app.config['MAX_CONTENT_LENGTH']=16*1024*1024 # 16 Mb upload limit
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mimic.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate=Migrate(app,db)
 
