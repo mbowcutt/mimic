@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, jsonify, request, redirect, url_for, send_from_directory, render_template, Blueprint
+from flask import Flask, flash, jsonify, request, redirect, url_for, send_from_directory, render_template, Blueprint, session, g
 from werkzeug.utils import secure_filename
 import markovify
 import logging
@@ -11,6 +11,7 @@ logging.basicConfig(filename='app.log',level=logging.INFO)
 
 from mimic.mimic_db import *
 from mimic.forms import *
+#from mimic.authentication import *
 
 mimic = Blueprint('mimic', __name__, template_folder="templates", static_folder="static")
 
@@ -23,22 +24,29 @@ def index():
 @mimic.route("/<name>/<action>", methods=['GET', 'POST'])
 def persona(name, action):
     person = readPersona(name)
-    if action=="upload":
+    if action=="persona":
         if request.method == 'POST':
-            if 'file' not in request.files:
-                flash("No 'file' file in form")
-                return redirect(url_for("persona", name=name, action="manage"))
+            if(request.form['action']=="delete"):
+                deletePersona(person)
+                return redirect(url_for("index"))
+            else:
+                if 'file' not in request.files:
+                    flash("No 'file' file in form")
+                    return redirect(url_for("persona", name=name, action="manage"))
 
-            file = request.files['file']
+                file = request.files['file']
 
-            # if user does not select file, browser also
-            # submit a empty part without filename
-            if file.filename == '':
-                flash('No selected file')
-                return redirect(url_for("persona", name=name, action="manage"))
+                # if user does not select file, browser also
+                # submit a empty part without filename
+                if file.filename == '':
+                    flash('No selected file')
+                    return redirect(url_for("persona", name=name, action="manage"))
 
-            model = markovize(file)
-            createOrUpdatePersona(person, name, model, 'manual upload')
+                model = markovize(file)
+                if(request.form['action']=="create"):
+                    createPersona(name, model, 'manual upload')
+                elif(request.form['action']=="update"):
+                    updatePersona(person, model)
 
         return redirect(url_for("persona", name=name, action="manage"))
 
@@ -52,7 +60,21 @@ def persona(name, action):
                 flash("Persona does not exist")
                 return redirect(url_for("persona", name=name, action="manage"))
             else:
-                registerAlias(person, alias)
+                if(request.form['action']=="delete"):
+                    unregisterAlias(person, alias)
+                else:
+                    registerAlias(person, alias)
+                return redirect(url_for("persona", name=name, action="manage"))
+        else:
+            alias=request.args.get('delete')
+            if alias=="":
+                flash("No given alias")
+                return redirect(url_for("persona", name=name, action="manage"))
+            if not person:
+                flash("Persona does not exist")
+                return redirect(url_for("persona", name=name, action="manage"))
+            else:
+                unregisterAlias(person, alias)
                 return redirect(url_for("persona", name=name, action="manage"))
 
     elif action=="manage":
