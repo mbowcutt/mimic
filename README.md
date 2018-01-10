@@ -1,6 +1,6 @@
 # Mimic
 
-Mimic is a simple UI for bot creation. At the moment, mimic features markovify, a markov-chain text imitation engine. 
+Mimic is a simple UI for bot creation. At the moment, mimic features [markovify](https://github.com/jsvine/markovify), a markov-chain text imitation engine. 
 
 ## Installation
 
@@ -11,24 +11,10 @@ git clone https://github.com/mbowcutt/mimic.git mimic
 cd mimic
 ```
 
-It is recommended to develop under a virtual environment. Make sure you have `virtualenv` installed.
+From here, enter your [virtualenv](#using-virtual-environments) environment and install.
 
 ```shell
-pip install virtualenv
-```
-
-Then create a new environment. By default, the git repository will ignore the venv/ directory, but this can be conifigured in .gitignore
-
-```shell
-virtualenv venv
-source venv/bin/activate
-```
-
-To exit the virtual environment, issue the `deactivate` command. TO re-enter, issue `source venv/bin/activate`
-
-Now install.
-
-```shell
+source VENV_DIRECTORY/bin/activate
 pip install .
 ```
 
@@ -60,6 +46,23 @@ There's many things Mimic needs at the moment, the biggest of which is a stable 
 - Implement ReactXP
 - Implement IPFS
 - Implement HTTPS
+
+## Using Virtual Environments
+
+It is recommended to develop under a virtual environment. Make sure you have `virtualenv` installed.
+
+```shell
+pip install virtualenv
+```
+
+Then create a new environment. By default, the git repository will ignore the venv/ directory, but this can be conifigured in .gitignore
+
+```shell
+virtualenv venv
+source venv/bin/activate
+```
+
+To exit the virtual environment, issue the `deactivate` command. TO re-enter, issue `source venv/bin/activate`
 
 ## Contact
 
