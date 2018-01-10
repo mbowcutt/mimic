@@ -5,7 +5,7 @@
 mimic/node_modules/
 
 # python bytecode
-/__pycache__
+mimic/__pycache__/
 
 # logfile
 mimic/app.log
