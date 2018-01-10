@@ -3,8 +3,6 @@ from flask_wtf.file import FileField, FileRequired
 from wtforms import StringField
 from wtforms.validators import DataRequired
 
-from mimic import app
-
 class PersonaSearchForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
 

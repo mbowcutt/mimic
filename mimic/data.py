@@ -4,15 +4,13 @@ from flask_migrate import Migrate
 from mimic import app
 from mimic.engines import *
 
-## Upload restrictions
-ALLOWED_EXTENSIONS = set(['txt'])
-app.config['UPLOAD_FOLDER'] = '/tmp'
-app.config['MAX_CONTENT_LENGTH']=16*1024*1024 # 16 Mb upload limit
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mimic.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+ALLOWED_EXTENSIONS = set(['txt'])
 db = SQLAlchemy(app)
 migrate=Migrate(app,db)
+
+### OBJECTS
 
 class Persona(db.Model):
     name = db.Column(db.String(80), primary_key=True)
@@ -25,6 +23,8 @@ class Alias(db.Model):
     persona_name = db.Column(db.String(80), db.ForeignKey("persona.name"), nullable=False)
 
 db.create_all()
+
+### PERSONA CRUD
 
 def createPersona(name, model, source):
     person = Persona(name=name, model=model.to_json(), source = source)
@@ -48,6 +48,8 @@ def deletePersona(persona):
     db.session.delete(persona)
     db.session.commit()
 
+### ALIAS CRUD
+
 def registerAlias(persona, name):
     if(Alias.query.filter_by(name=name.lower()).first()):
         return
@@ -63,7 +65,3 @@ def unregisterAlias(persona, name):
     else:
         db.session.delete(alias)
         db.session.commit()
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
