@@ -1,10 +1,10 @@
 # Mimic
 
-Mimic is a simple UI for bot creation. At the moment, mimic features [markovify](https://github.com/jsvine/markovify), a markov-chain text imitation engine. 
+Mimic is a simple UI for bot profile creation. At the moment, mimic features [markovify](https://github.com/jsvine/markovify), a markov-chain text imitation engine. Users can create personas and aliases that link the engine to a profile's markov model, which is iteratively generated from a collection of text files.
 
 ## Installation
 
-Mimic is under active development, so there's no user installer. It will soon be deployed to the WWW, but until then you can build the source via `pip`. To get started, clone the repository into a new directory.
+Mimic can be installed locally via `pip`. To get started, clone the repository into a new directory.
 
 ```shell
 git clone https://github.com/mbowcutt/mimic.git mimic
@@ -31,7 +31,7 @@ Finally, run
 flask run
 ```
 
-Then head over to http://127.0.0.1:5000
+Then head over to http://127.0.0.1:5000.
 
 ## Contributing
 
