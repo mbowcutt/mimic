@@ -16,3 +16,6 @@ mimic/mimic.db
 
 # flask-migrate
 migrations/
+
+# dist files
+dist/
