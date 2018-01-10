@@ -2,12 +2,12 @@ import os
 from flask import Flask, flash, jsonify, request, redirect, url_for, send_from_directory, render_template, Blueprint, session, g
 from werkzeug.utils import secure_filename
 import markovify
-import logging
+#import logging
 
 # Initialize app
 app = Flask(__name__)
 app.secret_key=os.urandom(24)
-logging.basicConfig(filename='mimic/app.log',level=logging.INFO)
+#logging.basicConfig(filename='mimic/app.log',level=logging.INFO)
 
 from mimic.data import *
 from mimic.forms import *
