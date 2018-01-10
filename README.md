@@ -15,11 +15,11 @@ It is recommended to develop under a virtual environment. Make sure you have `vi
 
 ```shell
 pip install virtualenv
-'''
+```
 
 Then create a new environment. By default, the git repository will ignore the venv/ directory, but this can be conifigured in .gitignore
 
-'''shell
+```shell
 virtualenv venv
 source venv/bin/activate
 ```
