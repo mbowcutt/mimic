@@ -1,0 +1,22 @@
+INFO:werkzeug: * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 947-650-761
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:43:00] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:43:01] "GET /favicon.ico HTTP/1.1" 404 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:43:02] "GET /explore HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:43:06] "GET /KJV/utter HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:43:12] "GET /KJV/utter HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:43:14] "GET /explore HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:43:46] "GET /Gospels/utter HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:43:48] "GET /Gospels/manage HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:43:57] "POST /Gospels/persona HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:43:57] "GET /Gospels/manage HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:44:02] "POST /Gospels/persona HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:44:02] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:44:10] "POST /explore HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:44:10] "GET /Gospels/utter HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:44:10] "GET /Gospels/manage HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:44:16] "POST /Gospels/persona HTTP/1.1" 302 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:44:16] "GET /Gospels/manage HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [09/Jan/2018 22:44:18] "GET /explore HTTP/1.1" 200 -

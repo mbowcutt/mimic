@@ -2,17 +2,16 @@
 /venv
 
 # npm
-/node_modules
+mimic/node_modules/
 
 # python bytecode
 /__pycache__
 
 # logfile
-app.log
+mimic/app.log
 
 # mimic.db
-mimic.db
-mimic_backup.db
+mimic/mimic.db
 
 # flask-migrate
 migrations/
