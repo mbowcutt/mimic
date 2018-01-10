@@ -1,8 +1,8 @@
 from flask import flash, request, redirect, url_for, render_template
 
-from mimic.engines import *
 from mimic.forms import *
 from mimic.data import *
+from mimic.uploads import *
 
 @app.route("/explore", methods=['GET', 'POST'])
 def explore():
@@ -32,23 +32,7 @@ def profile(name, action):
                 deletePersona(person)
                 return redirect(url_for("index"))
             else:
-                if 'file' not in request.files:
-                    flash("No 'file' file in form")
-                    return redirect(url_for("profile", name=name, action="manage"))
-
-                file = request.files['file']
-
-                # if user does not select file, browser also
-                # submit a empty part without filename
-                if file.filename == '':
-                    flash('No selected file')
-                    return redirect(url_for("profile", name=name, action="manage"))
-
-                model = markovize(file)
-                if(request.form['action']=="create"):
-                    createPersona(name, model, 'manual upload')
-                elif(request.form['action']=="update"):
-                    updatePersona(person, model)
+                upload(request, name, person)
 
         return redirect(url_for("profile", name=name, action="manage"))
 
