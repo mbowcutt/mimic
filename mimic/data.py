@@ -1,9 +1,8 @@
-from mimic import app, markovify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from werkzeug.utils import secure_filename
 
-import os
+from mimic import app
+from mimic.engines import *
 
 ## Upload restrictions
 ALLOWED_EXTENSIONS = set(['txt'])
