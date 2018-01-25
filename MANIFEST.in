@@ -1,2 +1,0 @@
-recursive-include mimic/templates *
-recursive-include mimic/static *
