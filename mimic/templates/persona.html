@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+    <div class="bgimg w3-display-container">
+        {% block content %}{% endblock %}
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+<div class="w3-bar w3-black w3-bottom">
+    <label class="w3-jumbo w3-bar-item w3-left-align">{{name}}</label>
+    <a href="{{url_for('profile', name=name, action='utter')}}" class="w3-bar-item w3-button w3-sand w3-round-xlarge w3-margin">
+        <i class="material-icons w3-jumbo" >textsms</i>
+    </a>
+    <a href="{{url_for('profile', name=name, action='manage')}}" class="w3-bar-item w3-button w3-sand w3-round-xlarge w3-margin">
+        <i class="material-icons w3-jumbo" >settings</i>
+    </a>
+</div> 
+{% endblock %}
