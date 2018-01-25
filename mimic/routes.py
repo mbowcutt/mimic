@@ -11,7 +11,7 @@ def explore():
         if not name:
             return redirect("/explore")
         else:
-            alias = Alias.query.filter_by(name=name.lower()).first()
+            alias = readAlias(name)
             if not alias:
                 return redirect(url_for("profile", name=name, action="utter"))
             else:

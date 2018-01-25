@@ -59,9 +59,12 @@ def registerAlias(persona, name):
         db.session.commit()
 
 def unregisterAlias(persona, name):
-    alias=Alias.query.filter_by(name=name.lower()).first()
+    alias=readAlias(name)
     if alias.name == alias.persona.name.lower():
         return
     else:
         db.session.delete(alias)
         db.session.commit()
+
+def readAlias(name):
+    return Alias.query.filter_by(name=name.lower()).first()
