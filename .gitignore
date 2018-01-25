@@ -1,0 +1,26 @@
+# virtual environment directory
+/venv
+
+# npm
+/mimic/node_modules/
+
+# python bytecode
+/__pycache__/
+/mimic/__pycache__/
+
+# logfile
+/mimic/app.log
+
+# mimic.db
+/mimic/mimic.db
+
+# flask-migrate
+/migrations/
+
+# Setuptools distribution folder.
+/dist/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+
+/build/
