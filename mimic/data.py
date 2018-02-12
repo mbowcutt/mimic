@@ -14,28 +14,37 @@ migrate=Migrate(app,db)
 
 class Persona(db.Model):
     name = db.Column(db.String(80), primary_key=True)
-    model = db.Column(db.Text, nullable=False)
-    source = db.Column(db.Text, nullable=False)
+    model = db.Column(db.Text)
 
 class Alias(db.Model):
     name = db.Column(db.String(80), primary_key=True)
     persona = db.relationship("Persona", backref="aliases", lazy=True)
     persona_name = db.Column(db.String(80), db.ForeignKey("persona.name"), nullable=False)
 
+class Source(db.Model):
+    title = db.Column(db.String(200), primary_key=True)
+    description = db.Column(db.Text)
+    url = db.Column(db.Text, nullable = False)
+    persona = db.relationship("Persona", backref="sources", lazy=True)
+    persona_name = db.Column(db.String(80), db.ForeignKey("persona.name"), nullable=False)
+
 db.create_all()
 
 ### PERSONA CRUD
 
-def createPersona(name, model, source):
-    person = Persona(name=name, model=model.to_json(), source = source)
+def createPersona(name):
+    person = Persona(name=name, model=None)
     registerAlias(person, name)
     db.session.add(person)
     db.session.commit()
     return
 
-def updatePersona(person, model):
-    model_old = markovify.Text.from_json(person.model)
-    model_new = markovify.combine([model_old, model])
+def updatePersona(persona, model):
+    if persona.model:
+        model_old = markovify.Text.from_json(persona.model)
+        model_new = markovify.combine([model_old, model])
+    else:
+        model_new = model
     person.model = model_new.to_json()
     db.session.commit()
 
@@ -45,6 +54,8 @@ def readPersona(name):
 def deletePersona(persona):
     for alias in persona.aliases:
         db.session.delete(alias)
+    for source in persona.sources:
+        db.session.delete(source)
     db.session.delete(persona)
     db.session.commit()
 
@@ -68,3 +79,14 @@ def unregisterAlias(persona, name):
 
 def readAlias(name):
     return Alias.query.filter_by(name=name.lower()).first()
+
+### source CRUD
+
+def addSource(persona, title, description, url):
+    source = Source(title=title, description=description, url=url, persona=persona, persona_name=persona.name)
+    persona.sources.append(source)
+    db.session.commit()
+
+def removeSource(source):
+    db.session.delete(source)
+    db.session.commit
