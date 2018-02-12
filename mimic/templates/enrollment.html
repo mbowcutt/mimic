@@ -15,14 +15,14 @@
                 <label class="w3-xlarge w3-padding">Alias Management</label>
                 <i class="material-icons w3-button w3-xlarge w3-right" 
                     onclick="w3.toggleShow('#alias_list')">keyboard_arrow_down</i>
+                <i class="material-icons w3-bar-item w3-btn w3-right" 
+                    onclick="w3.toggleShow('#alias_name')">control_point</i>
             </li>
 
-            {% for alias in aliases %}
+            {% for alias in person.aliases %}
                 <li class="w3-large w3-bar" id="alias_list" style="display:none;">
                     {% if alias.name==alias.persona.name.lower() %}
                         <div class="w3-bar-item">{{alias.name}} (default)</div>
-                        <span class="material-icons w3-bar-item w3-btn w3-right" 
-                            onclick="w3.toggleShow('#alias_name')">control_point</span>
                     {% else %}
                         <div class="w3-bar-item">{{alias.name}}</div>
                         <form method="POST" action="/{{name}}/alias">
@@ -41,53 +41,59 @@
             </form>
         </div>
 
+    </br>
+
+        <div class="w3-card w3-ul w3-sand">
+                <li>
+                    <label class="w3-xlarge w3-padding">Source Control</label>
+                    <i class="material-icons w3-button w3-xlarge w3-right" 
+                        onclick="w3.toggleShow('#source_list')">keyboard_arrow_down</i>
+                </li>
+                {% for source in person.sources %}
+                <li class="w3-large w3-bar" id="source_list" style="display:none;">
+                    {{source.url}}
+                </li>
+                {% endfor %}
+                <!--
+                <li id="upload_form" style="display:none;">
+                    <form method="POST" enctype="multipart/form-data" action="/{{name}}/persona" class="w3-bar">
+                        {% if exist %}
+                            <input type="hidden" name="action" value="update">
+                        {% else %}
+                            <input type="hidden" name="action" value="create">
+                        {% endif %}
+                        {{ upload.file(class_="w3-bar-item w3-button") }}
+                        <button class="w3-bar-item w3-button w3-large" type=submit>Upload</button>  
+                    </form>
+                </li>
+            -->
+            </div> 
+
+        </br>
+
+        <div class="w3-card w3-ul w3-red">
+            <li>
+                <label class="w3-xlarge w3-padding">Delete Persona</label>
+                <i class="material-icons w3-button w3-xlarge w3-right" 
+                    onclick="w3.toggleShow('#delete_form')">keyboard_arrow_down</i>
+            </li>
+    
+            <li class="w3-bar w3-large" id="delete_form" style="display:none;">
+                <div class="w3-bar-item">Permanently delete persona</div>
+                <a href="/{{name}}/delete">
+                    <i class="material-icons w3-bar-item w3-button" onclick="">delete</i>
+                </a>
+            </li>
+        </div>
+
     {% else %}
+
         <p class="w3-large w3-center">
             ...doesn't exist yet. If you've got the goods, though, you can create {{name}}
         </p>
-    {% endif %}
+        
+    {% endif %}    
 
-    </br>
-
-    <div class="w3-card w3-ul w3-sand">
-        <li>
-            <label class="w3-xlarge w3-padding">Source Control</label>
-            <i class="material-icons w3-button w3-xlarge w3-right" 
-                onclick="w3.toggleShow('#upload_form')">keyboard_arrow_down</i>
-        </li>
-
-        <li id="upload_form" style="display:none;">
-            <form method="POST" enctype="multipart/form-data" action="/{{name}}/persona" class="w3-bar">
-                {% if exist %}
-                    <input type="hidden" name="action" value="update">
-                {% else %}
-                    <input type="hidden" name="action" value="create">
-                {% endif %}
-                {{ upload.file(class_="w3-bar-item w3-button") }}
-                <button class="w3-bar-item w3-button w3-large" type=submit>Upload</button>  
-            </form>
-        </li>
-    </div> 
-
-    </br>
-
-    {% if exist %}
-    <div class="w3-card w3-ul w3-red">
-        <li>
-            <label class="w3-xlarge w3-padding">Delete Persona</label>
-            <i class="material-icons w3-button w3-xlarge w3-right" 
-                onclick="w3.toggleShow('#delete_form')">keyboard_arrow_down</i>
-        </li>
-
-        <li class="w3-bar w3-large" id="delete_form" style="display:none;">
-            <div class="w3-bar-item">Permanently delete persona</div>
-            <form method="POST" enctype="multipart/form-data" action="/{{name}}/persona" class="w3-bar-item">
-                <input type="hidden" name="action" value="delete">
-                <button class="material-icons w3-bar-item w3-button" type=submit>delete</button>  
-            </form>
-        </li>
-    </div>
-    {% endif %}
 
 </div>
 {% endblock %}

@@ -26,55 +26,55 @@ def develop():
 @app.route("/<name>/<action>", methods=['GET', 'POST'])
 def profile(name, action):
     person = readPersona(name)
-    if action=="persona":
-        if request.method == 'POST':
-            if(request.form['action']=="delete"):
-                deletePersona(person)
-                return redirect(url_for("index"))
-            else:
-                upload(request, name, person)
-
-        return redirect(url_for("profile", name=name, action="manage"))
-
-    elif action=="alias":
-        if request.method=="POST":
-            alias=request.form['alias']
-            if alias=="":
-                flash("No given alias")
-                return redirect(url_for("profile", name=name, action="manage"))
-            if not person:
-                flash("Persona does not exist")
-                return redirect(url_for("profile", name=name, action="manage"))
-            else:
-                if(request.form['action']=="delete"):
-                    unregisterAlias(person, alias)
-                else:
-                    registerAlias(person, alias)
-                return redirect(url_for("profile", name=name, action="manage"))
-        else:
-            alias=request.args.get('delete')
-            if alias=="":
-                flash("No given alias")
-                return redirect(url_for("profile", name=name, action="manage"))
-            if not person:
-                flash("Persona does not exist")
-                return redirect(url_for("profile", name=name, action="manage"))
-            else:
-                unregisterAlias(person, alias)
-                return redirect(url_for("profile", name=name, action="manage"))
-
-    elif action=="manage":
+    if action=="init":
         if not person:
-            return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=False)
-        else:
-            aliases=person.aliases
-            return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=True, aliases=aliases, aliasform=PersonaAliasForm())
-    
-    else:
+            createPersona(name)
+        return redirect(url_for("manage", name=name))
+
+    elif action=="delete":
+        deletePersona(person)
+        return redirect(url_for("manage", name=name))
+
+    elif action=="markovify":
         if not person:
-            return redirect(url_for("profile", name=name, action="manage"))
+            return redirect(url_for("manage", name=name))
         return render_template("utter.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(),
                                 name=name, engine = markovify.Text.from_json(person.model))
+
+    elif action=="alias":
+        if not person or request.method=="GET":
+            return redirect(url_for("manage", name=name))
+
+        alias=request.form['alias']
+        if alias=="":
+            flash("No given alias")
+            return redirect(url_for("manage", name=name))
+
+        if(request.form['action']=="delete"):
+            unregisterAlias(person, alias)
+        elif(request.form['action']=="add"):
+            registerAlias(person, alias)
+        return redirect(url_for("manage", name=name))
+
+    elif action=="source":
+        if not person or request.method=="GET":
+            return redirect(url_for("manage", name=name))
+        title = request.form['title']
+        description = request.form['description']
+        url = request.form['url']
+        addSource(person, title, description, url)
+        ## TODO: markov train text at gist source
+    else:
+        return redirect(url_for("manage", name=name))
+        
+    
+@app.route("/<name>")
+def manage(name):
+    person = readPersona(name)
+    if not person:
+        return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=False)
+    else:
+        return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=True, person=person, aliasform=PersonaAliasForm())
 
 @app.route("/")
 def index():
