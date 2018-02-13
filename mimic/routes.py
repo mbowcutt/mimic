@@ -59,22 +59,28 @@ def profile(name, action):
     elif action=="source":
         if not person or request.method=="GET":
             return redirect(url_for("manage", name=name))
-        title = request.form['title']
-        description = request.form['description']
-        url = request.form['url']
-        addSource(person, title, description, url)
+
+        if (request.form['action']=="delete"):
+            removeSource(person, request.form['title'])
+
+        elif(request.form['action']=="add"):
+            title = request.form['title']
+            description = request.form['description']
+            uri = request.form['uri']
+            addSource(person, title, description, uri)
+        
         ## TODO: markov train text at gist source
-    else:
-        return redirect(url_for("manage", name=name))
+    
+    return redirect(url_for("manage", name=name))
         
     
 @app.route("/<name>")
 def manage(name):
     person = readPersona(name)
     if not person:
-        return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=False)
+        return render_template("enrollment.html", search=PersonaSearchForm(), name=name, exist=False)
     else:
-        return render_template("enrollment.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(), name=name, exist=True, person=person, aliasform=PersonaAliasForm())
+        return render_template("enrollment.html", search=PersonaSearchForm(), name=name, exist=True, person=person, aliasform=PersonaAliasForm(), sourceform=SourceControlForm())
 
 @app.route("/")
 def index():

@@ -48,25 +48,34 @@
                     <label class="w3-xlarge w3-padding">Source Control</label>
                     <i class="material-icons w3-button w3-xlarge w3-right" 
                         onclick="w3.toggleShow('#source_list')">keyboard_arrow_down</i>
+                    <i class="material-icons w3-bar-item w3-btn w3-right" 
+                        onclick="w3.toggleShow('#source_form')">control_point</i>
                 </li>
                 {% for source in person.sources %}
                 <li class="w3-large w3-bar" id="source_list" style="display:none;">
-                    {{source.url}}
+                    <div class="w3-bar-item">{{source.title}}</div>
+                    <form method="POST" action="/{{name}}/source">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="title" value="{{source.title}}">
+                        <button type="submit" class="material-icons w3-bar-item 
+                            w3-btn w3-right">delete</button>
+                    </form>
+                    <i class="material-icons w3-button w3-xlarge w3-right" 
+                        onclick="w3.toggleShow('#source_description')">info_outline</i>
                 </li>
                 {% endfor %}
-                <!--
-                <li id="upload_form" style="display:none;">
-                    <form method="POST" enctype="multipart/form-data" action="/{{name}}/persona" class="w3-bar">
-                        {% if exist %}
-                            <input type="hidden" name="action" value="update">
-                        {% else %}
-                            <input type="hidden" name="action" value="create">
-                        {% endif %}
-                        {{ upload.file(class_="w3-bar-item w3-button") }}
-                        <button class="w3-bar-item w3-button w3-large" type=submit>Upload</button>  
-                    </form>
-                </li>
-            -->
+
+                <form method="POST" action="/{{name}}/source" id="source_form" style="display:none;">
+                    <input type="hidden" name="action" value="add">
+                    {{sourceform.title(class_="w3-input w3-border-top 
+                        w3-sand w3-padding w3-large", placeholder="Title")}}
+                    {{sourceform.description(class_="w3-input w3-border-top 
+                        w3-sand w3-padding w3-large", placeholder="Description")}}
+                    {{sourceform.uri(class_="w3-input w3-border-top 
+                        w3-sand w3-padding w3-large", placeholder="uri")}}
+                    <button type=submit>Go</button>
+                </form>
+
             </div> 
 
         </br>

@@ -12,3 +12,8 @@ class PersonaAliasForm(FlaskForm):
 class PersonaEnrollmentForm(FlaskForm):
     file = FileField("Source Document", validators=[FileRequired()])
 
+class SourceControlForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    description = StringField('Description')
+    uri = StringField('URI', validators=[DataRequired()])
+

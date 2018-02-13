@@ -24,7 +24,7 @@ class Alias(db.Model):
 class Source(db.Model):
     title = db.Column(db.String(200), primary_key=True)
     description = db.Column(db.Text)
-    url = db.Column(db.Text, nullable = False)
+    uri = db.Column(db.Text, nullable = False)
     persona = db.relationship("Persona", backref="sources", lazy=True)
     persona_name = db.Column(db.String(80), db.ForeignKey("persona.name"), nullable=False)
 
@@ -82,11 +82,12 @@ def readAlias(name):
 
 ### source CRUD
 
-def addSource(persona, title, description, url):
-    source = Source(title=title, description=description, url=url, persona=persona, persona_name=persona.name)
+def addSource(persona, title, description, uri):
+    source = Source(title=title, description=description, uri=uri, persona=persona, persona_name=persona.name)
     persona.sources.append(source)
     db.session.commit()
 
-def removeSource(source):
+def removeSource(persona, title):
+    source = Source.query.filter_by(title=title).first()
     db.session.delete(source)
-    db.session.commit
+    db.session.commit()
