@@ -38,7 +38,7 @@ def profile(name, action):
     elif action=="markovify":
         if not person:
             return redirect(url_for("manage", name=name))
-        return render_template("utter.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(),
+        return render_template("markovify.html", search=PersonaSearchForm(), upload=PersonaEnrollmentForm(),
                                 name=name, engine = markovify.Text.from_json(person.model))
 
     elif action=="alias":
@@ -61,15 +61,15 @@ def profile(name, action):
             return redirect(url_for("manage", name=name))
 
         if (request.form['action']=="delete"):
-            removeSource(person, request.form['title'])
+            removeSource(person, request.form['title']);
+            ## TODO: Retrain persona
 
         elif(request.form['action']=="add"):
-            title = request.form['title']
+            title = request.form['title'];
             description = request.form['description']
             uri = request.form['uri']
-            addSource(person, title, description, uri)
-        
-        ## TODO: markov train text at gist source
+            addSource(person, title, description, uri);
+            ## TODO: Retrain Persona
     
     return redirect(url_for("manage", name=name))
         
