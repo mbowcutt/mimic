@@ -39,15 +39,6 @@ def createPersona(name):
     db.session.commit()
     return
 
-def updatePersona(persona, model):
-    if persona.model:
-        model_old = markovify.Text.from_json(persona.model)
-        model_new = markovify.combine([model_old, model])
-    else:
-        model_new = model
-    person.model = model_new.to_json()
-    db.session.commit()
-
 def readPersona(name): 
     return Persona.query.filter_by(name=name).first()
 
@@ -85,9 +76,11 @@ def readAlias(name):
 def addSource(persona, title, description, uri):
     source = Source(title=title, description=description, uri=uri, persona=persona, persona_name=persona.name)
     persona.sources.append(source)
+    persona.model = markovize(persona);
     db.session.commit()
 
 def removeSource(persona, title):
     source = Source.query.filter_by(title=title).first()
-    db.session.delete(source)
+    db.session.delete(source);
+    persona.model = markovize(persona);
     db.session.commit()
