@@ -1,5 +1,6 @@
 # virtual environment directory
 /venv
+/venv2
 
 # npm
 /mimic/node_modules/
@@ -24,3 +25,5 @@
 /*.egg-info
 
 /build/
+
+/mimic/*.pyc

@@ -11,8 +11,6 @@ else:
 
 def markovize(persona):
         for source in persona.sources:
-                if what:
-                        er
                 url = urlparse(source.uri);
                 id = re.split('/', url.path)[2];
                 request = requests.get("https://api.github.com/gists/" + id);
@@ -21,5 +19,7 @@ def markovize(persona):
                         text='';
                         for file in gist['files']:
                                 text += gist['files'][file]['content'];
+                        if(sys.version_info < (3, 0)):
+                                text = text.encode("utf-8");
                         return markovify.Text(text).to_json();
         return None;
