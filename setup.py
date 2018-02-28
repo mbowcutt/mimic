@@ -12,6 +12,7 @@ setup(
         'Flask-Migrate',
         'Flask-WTF',
         'Flask-Uploads',
-        'markovify'
+        'markovify',
+	'requests',
     ]
 )
