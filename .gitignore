@@ -25,5 +25,4 @@
 /*.egg-info
 
 /build/
-
-/mimic/*.pyc
+*.pyc
