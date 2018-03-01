@@ -12,15 +12,16 @@ cd mimic
 pip install --editable .
 ```
 
-Before we run our application, we must set some environment variables.
+This will install the required dependencies. To run the program, start the init file.
+
+```shell
+python mimic/__init__.py
+```
+
+By default, Mimic will open on http://localhost:5000. If you wish to run mimic at another address or enable other flask developer options, configure them and call flask run:
 
 ```shell
 export FLASK_APP=mimic/__init__.py
 export FLASK_DEBUG=true
-```
-
-Finally, start flask and open http://127.0.0.1:5000.
-
-```shell
-flask run
+flask run --host 0.0.0.0 --port 8080
 ```
